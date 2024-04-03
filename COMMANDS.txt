@@ -1,0 +1,328 @@
+Domain Constraint:
+-----------------
+
+1. NOT NULL:
+
+CREATE TABLE Employee (
+  employee_id INT NOT NULL PRIMARY KEY,
+  name VARCHAR(40) NOT NULL,
+  age INT
+);
+
+DESCRIBE Employee;
+select * from Employee;
+
+ALTER TABLE Employee MODIFY age INT NOT NULL;
+
+INSERT INTO Employee (employee_id, name, age)
+VALUES (101, 'John Doe', 30),
+       (102, 'Jane Smith', 25),
+       (103, 'Michael Brown', 42),
+       (104, 'Alice Miller', 28),
+       (105, 'David Johnson', 35);
+
+
+2. CHECK:
+
+Declaring constraints with no names:
+------------------------------------
+CREATE TABLE Products (
+  product_id INT PRIMARY KEY,
+  name VARCHAR(50),
+  price DECIMAL(10,2) CHECK (price > 0),
+  quantity INT CHECK (quantity >= 1)
+);
+
+To view the constraint:
+-----------------------
+show crate table table_name;
+
+show create table Products
+
+INSERT INTO Products (product_id, name, price, quantity)
+VALUES (1, 'Headphones', 0, 20),
+       (2, 'Laptop', 799.95, 0);
+
+INSERT INTO Products (product_id, name, price, quantity)
+VALUES (1, 'Headphones', 49.99, 20),
+       (2, 'Laptop', 799.95, 0);
+
+INSERT INTO Products (product_id, name, price, quantity)
+VALUES (1, 'Headphones', 49.99, 20),
+       (2, 'Laptop', 799.95, 5);
+
+
+
+Declaring Constraints with names:
+---------------------------------
+CREATE TABLE Products (
+  product_id INT PRIMARY KEY,
+  name VARCHAR(50),
+  price DECIMAL(10,2) CONSTRAINT check_price CHECK (price > 0),
+  quantity INT CONSTRAINT check_quantity CHECK (quantity >= 1)
+);
+
+
+Select * from Products;
+describe Products;
+
+CREATE TABLE Customers (
+  customer_id INT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  age INT 
+);
+
+Adding a constraint using alter:
+--------------------------------
+ALTER TABLE table_name ADD CHECK (condition);
+
+ALTER TABLE Customers ADD CHECK (age > 10 AND age <= 100);
+ALTER TABLE Customers ADD CONSTRAINT check_age CHECK (age > 10 AND age <= 100);
+
+INSERT INTO Customers (customer_id, name, age) VALUES (123, 'John Doe', 9);
+INSERT INTO Customers VALUES (123, 'John Doe', 100);
+
+
+Remove check constraint:
+------------------------
+ALTER TABLE table_name DROP CONSTRAINT constraint_name;
+
+ALTER TABLE Customers DROP CONSTRAINT check_customer_age;
+
+
+Entity and Referential Integrity constraints:
+---------------------------------------------
+CREATE TABLE customers (
+  customer_id INT PRIMARY KEY,
+  customer_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE orders (
+  order_id INT PRIMARY KEY,
+  product_name VARCHAR(50) NOT NULL,
+  order_date DATE NOT NULL,
+  customer_id INT NOT NULL
+);
+
+ALTER TABLE orders
+ADD FOREIGN KEY (customer_id) REFERENCES customers (customer_id) ON DELETE CASCADE;
+
+
+INSERT INTO orders (order_id, product_name, order_date, customer_id) VALUES
+  (1, 'Headphones', '2024-03-31', 123),
+  (2, 'Laptop', '2024-03-25', 456),
+  (3, 'Book', '2024-04-01', 789),
+  (4, 'Shirt', '2024-03-28', 123),
+  (5, 'Monitor', '2024-03-20', 456);
+
+INSERT INTO customers (customer_id, customer_name) VALUES
+  (124, 'John Doe'),
+  (457, 'Jane Smith'),
+  (123, 'Michael Brown'),
+  (789, 'Alice Johnson'),
+  (456, 'David Miller');
+
+select * from customers;
+select * from orders;
+select count(distinct customer_id) from orders;
+select customer_id, customer_name from customers where customer_id in (select distinct customer_id from orders);
+select customer_id, customer_name from customers where customer_id not in (select distinct customer_id from orders);
+TRUNCATE TABLE customers;
+
+DDL Commands:
+----------------------------------------------------------
+CREATE DATABASE company;
+
+CREATE TABLE Employee (
+  Emp_Id INT PRIMARY KEY,  
+  Emp_Name VARCHAR(50),
+  Emp_Designation VARCHAR(50),
+  Emp_Salary DECIMAL(10,2)
+);
+
+adding single column:
+---------------------
+ALTER TABLE Employee ADD date_of_birth DATE;
+
+adding multiple columns:
+-----------------------
+Alter Table Employee ADD(Address Varchar(25), Phone_no INT, Email_id Varchar(20));
+
+describe Employee;
+
+droping single column:
+----------------------
+ALTER TABLE Employee DROP COLUMN date_of_birth;
+
+droping multiple columns:
+-------------------------
+ALTER TABLE Employee DROP COLUMN Address, Phone_no, Email_id;
+
+ALTER TABLE Employee RENAME COLUMN Emp_Designation TO Emp_Role;
+
+INSERT INTO Employee (Emp_Id, Emp_Name, Emp_Designation, Emp_Salary) VALUES
+  (1, 'Alice Morgan', 'Software Developer', 85000.50),
+  (2, 'Bob Johnson', 'Marketing Manager', 92341.23),
+  (3, 'Charlie Garcia', 'Sales Representative', 67890.78),
+  (4, 'Diana Patel', 'Human Resources Specialist', 72150.00),
+  (5, 'Ethan Lee', 'Project Manager', 105429.95);
+
+ALTER TABLE Employee MODIFY COLUMN Emp_Salary FLOAT;
+ALTER TABLE Employee MODIFY COLUMN Emp_Salary FLOAT(10,2);
+
+select * from Employee;
+
+Use DECIMAL(10,2) 
+-------------------
+for financial data, measurements requiring high precision, 
+or calculations where even small rounding errors can be significant.
+
+Use FLOAT(10,2) 
+-------------------
+for scientific data, engineering calculations 
+where a small degree of approximation is acceptable, 
+or when storage space is a major concern.
+
+DROP DATABASE database_name;
+DROP TABLE table_name;
+TRUNCATE TABLE table_name;
+
+RENAME Employee TO Emp;
+
+--------------------DML COMMANDS----------------------------------------------------------
+SELECT * FROM Employee;
+
+SELECT Emp_Name, Emp_Salary FROM Employee;  
+
+SELECT COUNT(*) from Employee;
+
+select count(distinct Emp_Designation) from Employee;
+
+select AVG(Emp_Salary), min(Emp_Salary), max(Emp_Salary), sum(Emp_Salary)
+
+alias names for columns for query output:
+-----------------------------------------
+using AS
+
+
+INSERT
+---------------------------------
+CREATE TABLE People(  
+    id int NOT NULL PRIMARY KEY,  
+    name varchar(45) NOT NULL,  
+    occupation varchar(35) NOT NULL,  
+    age int NOT NULL
+);  
+
+INSERT INTO People (id, name, occupation, age)   
+VALUES (101, 'Peter', 'Engineer', 32); 
+
+select * from people;
+
+INSERT INTO People VALUES  
+(102, 'Joseph', 'Developer', 30),  
+(103, 'Mike', 'Leader', 28),  
+(104, 'Stephen', 'Scientist', 45);  
+
+UPDATE
+-----------------------------------
+CREATE TABLE institute (
+  course_name VARCHAR(255) NOT NULL,
+  trainer VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL
+);
+
+INSERT INTO institute (course_name, trainer, email)
+VALUES ('Java', 'Mike', 'mike@gmail.com'),
+       ('Python', 'James', 'james@gmail.com'),
+       ('Android', 'Robin', 'robin@gmail.com'),
+       ('Hadoop', 'Stephen', 'stephen@gmail.com'),
+       ('Testing', 'Micheal', 'micheal@gmail.com');
+
+select * from institute;
+
+UPDATE institute   
+SET email = 'mike@yahoo.com'    
+WHERE course_name = 'Java';
+
+update multiple rows
+--------------------
+CREATE TABLE society(
+  id INT PRIMARY KEY,
+  name VARCHAR(255),
+  occupation VARCHAR(255),
+  status VARCHAR(255)
+);
+
+INSERT INTO society(id, name, occupation, status)
+VALUES (101, 'Peter', 'Engineer', 'active'),
+       (102, 'Joseph', 'Doctor', 'active'),
+       (103, 'Mike', 'Engineer', 'active'),
+       (104, 'Stephen', 'Lawyer', 'active'),
+       (105, 'Mary', 'Politician', 'active');
+
+select * from society;
+
+UPDATE society
+SET status = 'inactive' 
+WHERE occupation = 'Engineer'; 
+
+DELETE
+---------------------------------------
+CREATE TABLE payment_status (
+  sid INT,
+  name VARCHAR(255),
+  course VARCHAR(255),
+  status VARCHAR(255)
+);
+
+INSERT INTO payment_status (sid, name, course, status)
+VALUES (101, 'Peter', 'CSE', 'success'),
+       (102, 'Joseph', 'AIML', 'failed'),
+       (103, 'Mike', 'AIML', 'success'),
+       (104, 'Stephen', 'ECE', 'success'),
+       (105, 'Mary', 'CSE', 'failed');
+
+select * from payment_status;
+
+DELETE FROM payment_status WHERE status='failed';
+
+------------------- VIEWS -------------------------------------
+CREATE TABLE courses (
+  course_id INT PRIMARY KEY,
+  course_name VARCHAR(255),
+  trainer VARCHAR(255),
+  duration VARCHAR(255),
+  trainer_experience INT
+);
+
+INSERT INTO courses (course_id, course_name, trainer, duration, trainer_experience)
+VALUES (101, 'Java', 'Mike', '60 days', 15),
+       (102, 'Python', 'Peter', '60 days', 13),
+       (103, 'Dot Net', 'John', '45 days', 7),
+       (104, 'C++', 'Wilson', '45 days', 17),
+       (105, 'Java Script', 'Roy', '90 days', 14);
+
+----------------CREATE VIEW--------------------
+CREATE VIEW trainer AS    
+SELECT trainer, trainer_experience
+ FROM courses;  
+
+----------------SEE THE VIEW TABLE-----------------
+SELECT * FROM trainer;
+
+
+--------------UPDATE VIEW-----------------------
+ALTER VIEW trainer AS    
+SELECT trainer, trainer_experience, course_id
+FROM courses; 
+
+---------------DROP VIEW-----------------------
+DROP VIEW trainer; 
+
+
+
+
+
+
+
