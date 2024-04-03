@@ -1,0 +1,117 @@
+CREATE DATABASE
+---------------------------------
+create database bus_ticket_booking;
+
+ACCESS DATABASE
+---------------------------------
+use bus_ticket_booking;
+
+CREATE BUS TABLE
+---------------------------------
+create table bus(busNo varchar(10),source varchar(20),destination
+varchar(20),coachType varchar(10),primary key(busNo));
+
+TO SEE TABLE STRUCTURE
+---------------------------------
+desc bus; (or) describe bus;
+
+show create table bus;
+
+-----------------------------------------
+NOTE: command to clear screen:
+system cls
+-----------------------------------------
+
+CREATE TICKET TABLE
+---------------------------------
+create table ticket(ticketNo varchar(20), DOJ date, 
+address varchar(20), contactNo varchar(15), busNo varchar(10), 
+seatNo int, source varchar(20), destination varchar(20), 
+primary key(ticketNo,busNo), foreign key(busNo) references bus(busNo));
+
+CREATE PASSENGER TABLE
+---------------------------------
+create table passenger(passportID varchar(15) ,ticketNo varchar(15),name
+varchar(15),contactNo varchar(20),age int, gender char(2),address varchar(20), primary
+key(passportID,ticketNo),foreign key(ticketNo) references ticket(ticketNo));
+
+CREATE RESERVATION TABLE
+---------------------------------
+create table reservation(PNRNo varchar(20),DOJ date,noOfSeats
+int,address varchar(20),contactNo varchar(20),busNo varchar(20),
+seatNo int, primary key(PNRNo,busNo),foreign key(busNo) references bus(busNo));
+
+CREATE CANCELLATION TABLE
+---------------------------------
+create table cancellation(PNRNo varchar(20),DOJ date,seatNo int, contactNo
+varchar(15),status varchar(10), primary key(PNRNo), foreign key(PNRNo) references
+reservation(PNRNo));
+
+INSERT INTO bus (busNo, source, destination, coachType) VALUES
+  ('BR1234', 'New York City', 'Los Angeles', 'AC Sleeper'),
+  ('BT5678', 'Chicago', 'Miami', 'Non-AC Seater'),
+  ('BV9012', 'Seattle', 'San Francisco', 'AC Sleeper'),
+  ('BX3456', 'Denver', 'Austin', 'Non-AC Seater'),
+  ('BY7890', 'Atlanta', 'Washington D.C.', 'AC Sleeper'),
+  ('BZ1234', 'Boston', 'Orlando', 'Non-AC Seater'),
+  ('CA5678', 'Las Vegas', 'Phoenix', 'AC Sleeper'),
+  ('CB9012', 'Houston', 'Dallas', 'Non-AC Seater'),
+  ('CC3456', 'San Diego', 'Portland', 'AC Sleeper'),
+  ('CD7890', 'Detroit', 'Philadelphia', 'Non-AC Seater');
+
+INSERT INTO ticket (ticketNo, DOJ, address, contactNo, busNo, seatNo, source, destination)
+VALUES
+  ('TK10001', '2024-05-03', '123 Main St', '555-123-4567', 'BR1234', 12, 'New York City', 'Los Angeles'),
+  ('TK10002', '2024-06-15', '456 Elm St', '444-234-5678', 'BT5678', 7, 'Chicago', 'Miami'),
+  ('TK10003', '2024-07-10', '789 Maple Ave', '333-345-6789', 'BV9012', 18, 'Seattle', 'San Francisco'),
+  ('TK10004', '2024-04-20', '1011 Oak Blvd', '222-456-7890', 'BX3456', 5, 'Denver', 'Austin'),
+  ('TK10005', '2024-05-24', '1213 Pine Rd', '111-567-8901', 'BY7890', 3, 'Atlanta', 'Washington D.C.'),
+  ('TK10006', '2024-06-08', '1415 Spruce St', '999-678-9012', 'BZ1234', 10, 'Boston', 'Orlando'),
+  ('TK10007', '2024-04-27', '1617 Hickory Ln', '888-789-0123', 'CA5678', 2, 'Las Vegas', 'Phoenix'),
+  ('TK10008', '2024-05-17', '1819 Elm St', '777-890-1234', 'CB9012', 9, 'Houston', 'Dallas'),
+  ('TK10009', '2024-07-03', '2021 Birch Ave', '666-012-3456', 'CC3456', 15, 'San Diego', 'Portland'),
+  ('TK10010', '2024-06-22', '2223 Oak St', '555-123-4567', 'CD7890', 4, 'Detroit', 'Philadelphia');
+
+INSERT INTO passenger (passportID, ticketNo, name, contactNo, age, gender, address)
+VALUES
+  ('PS12345', 'TK10001', 'John Doe', '555-123-4567', 30, 'M', '123 Main St'),
+  ('PS23456', 'TK10002', 'Jane Smith', '444-234-5678', 25, 'F', '456 Elm St'),
+  ('PS34567', 'TK10003', 'Michael Lee', '333-345-6789', 42, 'M', '789 Maple Ave'),
+  ('PS45678', 'TK10004', 'Sarah Jones', '222-456-7890', 38, 'F', '1011 Oak Blvd'),
+  ('PS56789', 'TK10005', 'David Miller', '111-567-8901', 50, 'M', '1213 Pine Rd'),
+  ('PS67890', 'TK10006', 'Emily Garcia', '999-678-9012', 22, 'F', '1415 Spruce St'),
+  ('PS78901', 'TK10007', 'Robert Hernandez', '888-789-0123', 45, 'M', '1617 Hickory Ln'),
+  ('PS89012', 'TK10008', 'Ashley Williams', '777-890-1234', 33, 'F', '1819 Elm St'),
+  ('PS90123', 'TK10009', 'William Brown', '666-012-3456', 60, 'M', '2021 Birch Ave'),
+  ('PS01234', 'TK10010', 'Jennifer Davis', '555-123-4567', 28, 'F', '2223 Oak St');
+
+INSERT INTO reservation (PNRNo, DOJ, noOfSeats, address, contactNo, busNo, seatNo)
+VALUES
+  ('RS10001', '2024-05-03', 1, '123 Main St', '555-123-4567', 'BR1234', 12),
+  ('RS10002', '2024-06-15', 2, '456 Elm St', '444-234-5678', 'BT5678', 7),
+  ('RS10003', '2024-07-10', 3, '789 Maple Ave', '333-345-6789', 'BV9012', 18),
+  ('RS10004', '2024-04-20', 1, '1011 Oak Blvd', '222-456-7890', 'BX3456', 5),
+  ('RS10005', '2024-05-24', 2, '1213 Pine Rd', '111-567-8901', 'BY7890', 3),
+  ('RS10006', '2024-06-08', 1, '1415 Spruce St', '999-678-9012', 'BZ1234', 10),
+  ('RS10007', '2024-04-27', 3, '1617 Hickory Ln', '888-789-0123', 'CA5678', 2),
+  ('RS10008', '2024-05-17', 2, '1819 Elm St', '777-890-1234', 'CB9012', 9),
+  ('RS10009', '2024-07-03', 1, '2021 Birch Ave', '666-012-3456', 'CC3456', 15),
+  ('RS10010', '2024-06-22', 2, '2223 Oak St', '555-123-4567', 'CD7890', 4);
+
+INSERT INTO cancellation (PNRNo, DOJ, seatNo, contactNo, status)
+VALUES
+  ('RS10001', '2024-05-03', 12, '333-345-6789', 'Cancelled'),
+  ('RS10002', '2024-06-15', 7, '777-890-1234', 'Pending'),
+  ('RS10003', '2024-07-10', 18, '222-456-7890', 'Refunded'),
+  ('RS10004', '2024-04-20', 5, '444-234-5678', 'Cancelled'),
+  ('RS10005', '2024-05-24', 3, '888-789-0123', 'Pending'),
+  ('RS10006', '2024-06-08', 10, '111-567-8901', 'Cancelled'),
+  ('RS10007', '2024-04-27', 2, '555-123-4567', 'Refunded'),
+  ('RS10008', '2024-05-17', 9, '999-678-9012', 'Pending'),
+  ('RS10009', '2024-07-03', 15, '666-012-3456', 'Cancelled'),
+  ('RS10010', '2024-06-22', 4, '555-123-4567', 'Refunded');
+
+
+  
+
+
